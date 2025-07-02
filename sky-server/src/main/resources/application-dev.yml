@@ -6,3 +6,9 @@ sky:
     database: sky_take_out
     username: root
     password: '@Ljx021225'
+
+  alioss:
+    access-key-secret: SXPGD5SkVBRCTaEltkdarMQCEJWmKg
+    bucket-name: test-dem11
+    access-key-id: LTAI5tCVmj5Qi7tfGVzsGNQp
+    endpoint: oss-ap-southeast-1.aliyuncs.com
