@@ -12,3 +12,9 @@ sky:
     bucket-name: test-dem11
     access-key-id: LTAI5tCVmj5Qi7tfGVzsGNQp
     endpoint: oss-ap-southeast-1.aliyuncs.com
+
+  redis:
+    host: localhost
+    port: 6379
+    password: Ljx021225
+    database: 0
