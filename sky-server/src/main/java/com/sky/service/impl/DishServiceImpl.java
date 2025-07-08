@@ -18,11 +18,14 @@ import com.sky.vo.DishVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Service
 @Slf4j
@@ -33,6 +36,9 @@ public class DishServiceImpl implements DishService {
     private DishFlavorMapper dishFlavorMapper;
     @Autowired
     private setmealDishMapper setmealDishMapper;
+    @Qualifier("redisTemplate")
+    @Autowired
+    private RedisTemplate redisTemplate;
 
     /**
      * 新增菜品，同时保存对应的口味数据
@@ -148,7 +154,7 @@ public class DishServiceImpl implements DishService {
 
     @Override
     public List<DishVO> listWithFlavor(Dish dish) {
-        List<Dish> dishList=dishMapper.list(dish);
+        List<Dish> dishList=dishMapper.list(dish.getCategoryId());
         List<DishVO> dishVOList = new ArrayList<>();
 
         for(Dish d: dishList ){
@@ -161,4 +167,27 @@ public class DishServiceImpl implements DishService {
         }
         return dishVOList;
     }
+
+    /**
+     * 菜品起售停售
+     * @param status
+     * @param id
+     */
+    @Override
+    public void startOrStop(Integer status, Long id) {
+        dishMapper.startOrStop(status,id);
+    }
+
+    /**
+     * 根据分类id查询菜品
+     * @param categoryId
+     * @return
+     */
+    @Override
+    public List<Dish> list(Long categoryId) {
+        List<Dish> list=dishMapper.list(categoryId);
+        return list;
+    }
+
+
 }

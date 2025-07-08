@@ -67,7 +67,7 @@
     </update>
 
     <select id="list" resultType="com.sky.entity.Dish">
-        select * from dish where category_id = #{categoryId}
+        select * from dish where category_id = #{categoryId} and status = 1
     </select>
 
 

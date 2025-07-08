@@ -1,8 +1,11 @@
 package com.sky.json;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalTimeDeserializer;
@@ -10,6 +13,7 @@ import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalTimeSerializer;
 
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -47,5 +51,18 @@ public class JacksonObjectMapper extends ObjectMapper {
 
         //注册功能模块 例如，可以添加自定义序列化器和反序列化器
         this.registerModule(simpleModule);
+
+        //--------------------------------------------------------------
+        // 设置序列化不包含null字段
+        this.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+
+        // 注册 Java8 时间模块
+        this.registerModule(new JavaTimeModule());
+
+        // 避免LocalDateTime序列化时报错
+        this.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+
+        // 可选：设置默认时间格式（不写也可以）
+        this.setDateFormat(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
     }
 }
