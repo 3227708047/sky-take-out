@@ -1,6 +1,8 @@
 package com.sky.controller.user;
 
+import com.sky.entity.ShoppingCart;
 import com.sky.result.Result;
+import com.sky.service.ShoppingCartService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -9,6 +11,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController("UserShopController")
@@ -33,5 +36,6 @@ public class ShopController {
         log.info("获取店铺的营业状态为：{}",status==1 ? "营业中" : "打烊中");
         return Result.success(status);
     }
+
 
 }
