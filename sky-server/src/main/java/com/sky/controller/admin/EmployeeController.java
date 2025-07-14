@@ -110,7 +110,9 @@ public class EmployeeController {
     @ApiOperation(value = "启用禁用员工账号")
     public Result startOrStop(@PathVariable Integer status,Long id){
         log.info("员工状态：{},员工id：{}",status,id);
+        Long currentId = BaseContext.getCurrentId();
         employeeService.updateStatus(status,id);
+
         return Result.success();
     }
 
