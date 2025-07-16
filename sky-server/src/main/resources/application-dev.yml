@@ -19,5 +19,5 @@ sky:
   redis:
     host: localhost
     port: 6379
-    password: Ljx021225
+    password:
     database: 0

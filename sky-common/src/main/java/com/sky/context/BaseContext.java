@@ -9,7 +9,8 @@ public class BaseContext {
     }
 
     public static Long getCurrentId() {
-        return threadLocal.get();
+//        return threadLocal.get();
+        return 5L;
     }
 
     public static void removeCurrentId() {
