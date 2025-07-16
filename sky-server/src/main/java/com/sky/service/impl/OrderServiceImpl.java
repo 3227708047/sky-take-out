@@ -28,6 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -252,23 +253,55 @@ public class OrderServiceImpl implements OrderService {
      */
     @Override
     public void OrderAgain(Long id) {
-        // 查询当前用户id
-        Long UserId = BaseContext.getCurrentId();
-
-        // 根据订单id查询当前订单详情
+        Long userId = BaseContext.getCurrentId();
         List<OrderDetail> orderDetailList = orderDetailMapper.getByOrderId(id);
-        // 将订单详情对象转换为购物车对象
-        List<ShoppingCart> shoppingCartList = orderDetailList.stream().map(x -> {
-            // 将原订单详情里面的菜品信息重新复制到购物车对象中
+        List<ShoppingCart> shoppingCartList = orderDetailList.stream().map(orderDetail -> {
             ShoppingCart shoppingCart = new ShoppingCart();
-            BeanUtils.copyProperties(x, shoppingCart, "id");
-            shoppingCart.setUserId(UserId);
+            BeanUtils.copyProperties(orderDetail, shoppingCart, "id");
+            shoppingCart.setUserId(userId);
             shoppingCart.setCreateTime(LocalDateTime.now());
             return shoppingCart;
         }).collect(Collectors.toList());
-
-        // 将购物车对象批量添加到数据库
         shoppingCartMapper.insertBatch(shoppingCartList);
+    }
+
+    /**
+     * 订单搜索
+     * @param ordersPageQueryDTO
+     * @return
+     */
+    @Override
+    public PageResult conditionSearch(OrdersPageQueryDTO ordersPageQueryDTO) {
+        PageHelper.startPage(ordersPageQueryDTO.getPage(), ordersPageQueryDTO.getPageSize());
+        Page<Orders> pages = orderMapper.pageQuery(ordersPageQueryDTO);
+        // 部分订单状态，需要额外返回订单菜品信息，将Orders转化为OrderVO
+        List<OrderVO> list = getOrderVOList(pages);
+        return new PageResult(pages.getTotal(), list);
+    }
+
+    private List<OrderVO> getOrderVOList(Page<Orders> pages) {
+        List<OrderVO> orderVOList = new ArrayList<>();
+        List<Orders> list = pages.getResult();
+
+        if(list!= null){
+            for (Orders order : list) {
+                OrderVO orderVO = new OrderVO();
+                BeanUtils.copyProperties(order, orderVO);
+                String orderDishes = getOrderDishesStr(order);
+                orderVO.setOrderDishes(orderDishes);
+                orderVOList.add(orderVO);
+            }
+        }
+        return orderVOList;
+    }
+
+    private String getOrderDishesStr(Orders order) {
+        List<OrderDetail> orderDetailList = orderDetailMapper.getByOrderId(order.getId());
+        List<String> OrderDishes = orderDetailList.stream().map(orderDetail -> {
+            String orderDishes = orderDetail.getName() + "*" + orderDetail.getNumber() + "份";
+            return orderDishes;
+        }).collect(Collectors.toList());
+        return String.join("", OrderDishes);
     }
 
 
