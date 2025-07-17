@@ -364,6 +364,11 @@ public class OrderServiceImpl implements OrderService {
         orderMapper.update(orders);
     }
 
+    /**
+     * 订单取消
+     * @param orderCancelDTO
+     * @throws Exception
+     */
     @Override
     public void cancelOrderDTO(OrdersCancelDTO orderCancelDTO) throws Exception {
         //查询订单
@@ -391,6 +396,10 @@ public class OrderServiceImpl implements OrderService {
         orderMapper.update(orders);
     }
 
+    /**
+     * 派送订单
+     * @param id
+     */
     @Override
     public void deliveryOrder(Long id) {
         Orders orderDB = orderMapper.getById(id);
@@ -407,6 +416,25 @@ public class OrderServiceImpl implements OrderService {
             orders.setDeliveryTime(LocalDateTime.now());
             orderMapper.update(orders);
         }
+    }
+
+    /**
+     * 订单完成
+     * @param id
+     * @return
+     **/
+    @Override
+    public void completeOrder(Long id) {
+        Orders ordersDB = orderMapper.getById(id);
+        // 校验订单是否存在，并且状态为4
+        if (ordersDB == null || !ordersDB.getStatus().equals(Orders.DELIVERY_IN_PROGRESS)) {
+            throw new OrderBusinessException(MessageConstant.ORDER_STATUS_ERROR);
+        }
+        Orders orders = new Orders();
+        orders.setId(ordersDB.getId());
+        orders.setStatus(Orders.COMPLETED);
+        orders.setDeliveryTime(LocalDateTime.now());
+        orderMapper.update(orders);
     }
 
 
