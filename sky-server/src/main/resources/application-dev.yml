@@ -9,6 +9,10 @@ sky:
   wechat:
     appid: wxe695c6770095bac2
     secret: 72009dca6bfab04ffdfd5717588e2e96
+  shop:
+    address: 江西省南昌市南昌县创新二路10号
+  baidu:
+    ak: VnH0PclmnEhe9bmLM0vw2Q1FUXBbdWa5
 
   alioss:
     access-key-secret: SXPGD5SkVBRCTaEltkdarMQCEJWmKg
